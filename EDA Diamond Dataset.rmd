@@ -1,0 +1,136 @@
+---
+title: "EDA Diamonds DataSet"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## This R markdown consists of Exploratory data analysis of Diamonds Dataset
+
+Loading the Dataset
+```{r Loading Diamonds DataSet}
+library(ggplot2)
+data("diamonds")
+```
+Number of Observations
+```{r Observations in Diamonds DataSet}
+dim(diamonds)
+```
+Number of Variables
+```{r Variables in Diamonds DataSet}
+names(diamonds)
+
+```
+Ordered Factors in DataSet
+```{r Ordered Factors in Diamonds DataSet}
+print("cut")
+table(diamonds$cut)
+print("color")
+table(diamonds$color)
+print("clarity")
+table(diamonds$clarity)
+
+```
+
+Diamonds Dataset Summary
+```{r diamonds summmary}
+summary(diamonds)
+```
+Price Histogram
+```{r price histogram, echo=FALSE}
+qplot(x= price, data = diamonds, color = I('black'), fill = I('blue'), binwidth = 400)
+```
+
+Price Summary
+```{r Price summmary}
+summary(diamonds$price)
+```
+Number of diamonds costs less than $500
+```{r }
+#qplot(x= price, data = subset(diamonds, diamonds$price<500), color = I('black'), fill = I('blue'), binwidth = 10)
+sum(diamonds$price<500)
+
+```
+Number of diamonds costs less than $250
+```{r }
+#qplot(x= price, data = subset(diamonds, diamonds$price<250), color = I('black'), fill = I('blue'), binwidth = 10)
+sum(diamonds$price<250)
+```
+Number of diamonds costs greater than equalto $15000
+```{r }
+#qplot(x= price, data = subset(diamonds, diamonds$price>=15000), color = I('black'), fill = I('blue'), binwidth = 10)
+sum(diamonds$price>=15000)
+```
+Exploring the large peak in price Histogram
+```{r Cheaper Diamonds}
+qplot(x= price, data = diamonds, color = I('black'), fill = I('blue'), binwidth = 20)+
+  scale_x_continuous(limits = c(0,800))
+ #ggsave('priceHistogram.png')
+```
+Price Histogram Based on Cut of the Diamond
+```{r price histogram based on cut, echo=FALSE}
+qplot(x= price, data = diamonds, color = I('black'), fill = I('blue'), binwidth = 400)+
+  facet_wrap(~diamonds$cut, ncol =3,  scales = "free")
+```
+Cut with highest Priced Diamond
+```{r}
+by(diamonds$price,diamonds$cut,max)
+```
+Cut with Lowest Priced Diamond
+```{r}
+by(diamonds$price,diamonds$cut,min)
+```
+Cut with Lowest Median Priced Diamond
+```{r}
+by(diamonds$price,diamonds$cut,median)
+```
+Price Per Carat Histogram
+```{r}
+qplot(x= price/carat, data = diamonds, color = I('black'), fill = I('blue'))+
+  scale_x_log10()+
+  facet_wrap(~diamonds$cut, ncol =3,  scales = "free")
+```
+Boxplots By clarity
+```{r}
+qplot(geom="boxplot", y = price,x = clarity, data = diamonds)+
+  coord_cartesian(ylim = 1:6000)
+```
+Boxplots By cut
+```{r}
+qplot(geom="boxplot", y = price,x = cut, data = diamonds)+
+  coord_cartesian(ylim = 1:8000)
+```
+Boxplots By color
+```{r}
+qplot(geom="boxplot", y = price,x = color, data = diamonds)+
+  coord_cartesian(ylim = 1:8000)
+```
+Price Range for Middle 50% of the diamonds with the color D
+```{r}
+summary(subset(diamonds,color=="D")$price)
+```
+IQR of the diamonds with the best color 
+```{r}
+IQR(subset(diamonds,color=="D")$price)
+```
+Price Range for Middle 50% of the diamonds with the color J
+```{r}
+summary(subset(diamonds,color=="J")$price)
+```
+IQR of the diamonds with the Worst color 
+```{r}
+IQR(subset(diamonds,color=="J")$price)
+```
+Price per carat of diamonds across
+the different colors of diamonds using boxplots.
+```{r}
+qplot(geom="boxplot", y = price/carat,x = color, data = diamonds)+
+  coord_cartesian(ylim = 1:6000)
+```
+The Weight of Diamonds vs carat
+```{r}
+qplot(geom = "freqpoly", x= carat, data = diamonds , bins = 500)+
+  scale_x_continuous(limits = c(0,2.5))
+```
